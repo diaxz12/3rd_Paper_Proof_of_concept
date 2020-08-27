@@ -35,17 +35,17 @@ most efficient allocation of goods.
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include <fstream>
 
 using namespace t_simplex;
 using namespace std;
 
-double CostMatrix[5][5]={
-        {9980,10217,10437,9994,10209},
-        {9969,10058,10185,110066,10079},
-        {9952,10041,10168,110044,10062},
-        {9928,10024,10163,110022,10047},
-        {9919,10007,10132,10215,10027}
-};
+//Variaveis globais <---esta parte pode ser melhorada pois estou alocar memória de uma forma estática e não dinâmica
+int NumMaintenanceInterventions,NumAssetsTransportMatrix;
+double CostMatrix[10][1000];
+double DemandArray[1000];
+double SupplyArray[10];
+
 
 double Dist(int * facPtr,int * warPtr) {
     //Formula for approximating the distance between a factory and a warehouse;
@@ -53,33 +53,133 @@ double Dist(int * facPtr,int * warPtr) {
 };
 
 int main(int argc, char** argv) {
-    int factories[5];
-    factories[0] = 1;
-    factories[1] = 2;
-    factories[2] = 3;
-    factories[3] = 4;
-    factories[4] = 5;
 
-    double supply[] = {2,0,0,0,5};
 
-    int warehouses[5];
-    warehouses[0] = 1;
-    warehouses[1] = 2;
-    warehouses[2] = 3;
-    warehouses[3] = 4;
-    warehouses[4] = 5;
+//    string line;
+//    if(argc >= 1){
+//        //ifstream inputFile(argv[1]);
+//        ifstream inputFile("Optimization_input.txt");
+//        if (inputFile.is_open())
+//        {
+//            getline(inputFile, line);
+//            //int pNum = stoi(line);
+//            int i = 0;
+//
+//            while (getline(inputFile, line))
+//            {
+//                string x = line.substr(0, line.find(" "));
+//                string y = line.substr(line.find(" "));
+//
+//                cout << x << "\t" << y << endl;
+//
+//                i++;
+//            }
+//            inputFile.close();
+//        }
+//        else{
+//            cout << "There was a problem opening or reading input file" << endl;
+//        }
+//    }else{
+//        cerr << "File not found \n";
+//        exit (EXIT_FAILURE);
+//    }
 
-    double demand[] = {1, 1, 1, 1, 1};
+    //Rotina para ler as coordenadas do ficheiro dados
+    int i,j; //indices da matriz
+    int contador=0; //conta o numero de iteracoes a fazer dependendo de cada fase da leitura do ficheiro ||1º fase: Ler tamanho matriz|| 2ª fase: Ler valores da matriz|| 3ª fase: ler a procura|| 4ª fase: ler a capacidade||
+    size_t pos = 0; //marca a posicao na string
+    string token; // valor a extrair
+    string delimiter = " "; //separador a utilizar no parse do texto (ex: ficheiro csv, tsv)
+    ifstream file("Optimization_input.txt"); //nome do ficheiro
+    if (file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+
+            if(line==""){
+                contador++; //atualizar fase
+            }
+
+            //1º fase: Ler tamanho matriz
+            if(contador==0 & line!=""){
+                while ((pos = line.find(delimiter)) != string::npos) {
+                    token = line.substr(0, pos); //extrair valor
+                    NumMaintenanceInterventions = stoi(token);
+                    cout << NumMaintenanceInterventions << endl; // converter valor para a matriz
+                    line.erase(0, pos + delimiter.length()); //apagar valor lido da linha que foi lida
+                }
+                pos = 0;
+                NumAssetsTransportMatrix = stoi(line);
+                cout << NumAssetsTransportMatrix << endl;
+            }
+
+            //2ª fase: Ler valores da matriz
+            //int CostMatrix[NumMaintenanceInterventions][NumAssetsTransportMatrix];
+
+            if(contador==1 & line!=""){
+                while ((pos = line.find(delimiter)) != string::npos) {
+                    token = line.substr(0, pos); //extrair valor
+                    CostMatrix[i][j] = stod(token);
+                    cout << CostMatrix[i][j] << "\t"; // converter valor para a matriz
+                    line.erase(0, pos + delimiter.length()); //apagar valor lido da linha que foi lida
+                    j++; //avancar a coluna
+                }
+                pos = 0;
+                CostMatrix[i][j] = stod(line);
+                cout << CostMatrix[i][j] << endl;
+                i++; //avancar a linha
+                j=0; //reset da coluna
+            }
+
+            //3ª fase: ler a procura
+            //int DemandArray[NumAssetsTransportMatrix];
+
+            if(contador==2 & line!=""){
+                while ((pos = line.find(delimiter)) != string::npos) {
+                    token = line.substr(0, pos); //extrair valor
+                    DemandArray[j] = stod(token);
+                    cout << DemandArray[j] << "\t"; // converter valor para a matriz
+                    line.erase(0, pos + delimiter.length()); //apagar valor lido da linha que foi lida
+                    j++; //avancar a linha
+                }
+                pos = 0;
+                DemandArray[j] = stod(line);
+                cout << DemandArray[j] << endl;
+                j=0; //reset da linha
+            }
+
+            //4ª fase: ler a capacidade
+            //int SupplyArray[NumMaintenanceInterventions];
+
+            if(contador>2 & line!=""){
+                SupplyArray[j] = stod(line);
+                cout << SupplyArray[j] << endl;
+                j++;
+            }
+
+        }
+        file.close();
+    }
+
+    //alocar os indices da factory e warehouses <--para melhorar os nomes e o processo de referenciacao
+    int factories[NumMaintenanceInterventions];
+    for(int k = 0; k<NumMaintenanceInterventions; k++){
+        factories[k] = k+1;
+    }
+
+    int warehouses[NumAssetsTransportMatrix];
+    for(int k = 0; k<NumAssetsTransportMatrix; k++){
+        warehouses[k] = k+1;
+    }
 
     cout << "Costs:" << endl;
-    for (int i = 0; i < 5; i++)
-        for (int j = 0; j < 5; j++)
+    for (int i = 0; i < NumMaintenanceInterventions; i++)
+        for (int j = 0; j < NumAssetsTransportMatrix; j++)
             cout << factories[i] << " to " << warehouses[j] << " : " << Dist(&factories[i], &warehouses[j]) << endl;
 
-    TsSignature<int> srcSig(5, factories, supply);
-    TsSignature<int> snkSig(5, warehouses, demand);
+    TsSignature<int> srcSig(NumAssetsTransportMatrix, factories, SupplyArray);
+    TsSignature<int> snkSig(NumAssetsTransportMatrix, warehouses, DemandArray);
 
-    TsFlow flow[100];
+    TsFlow flow[1000];
     int flowVars = 0;
 
     double result = transportSimplex(&srcSig, &snkSig, Dist, flow, &flowVars);
