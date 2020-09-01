@@ -34,7 +34,7 @@ double Dist(int * facPtr,int * warPtr) {
 };
 
 
-double AssetTransportSolver(char * path){
+double AssetTransportSolver(char const * path){
 
     //Variable to measure time
     double ElapsedTime;
@@ -50,7 +50,7 @@ double AssetTransportSolver(char * path){
     size_t pos = 0; //marca a posicao na string
     string token; // valor a extrair
     string delimiter = " "; //separador a utilizar no parse do texto (ex: ficheiro csv, tsv)
-    ifstream file("Optimization_langrange_input.txt"); //nome do ficheiro
+    ifstream file(path); //nome do ficheiro
     if (file.is_open()) {
         while (getline(file, line)) {
 
@@ -59,7 +59,7 @@ double AssetTransportSolver(char * path){
             }
 
             //1º fase: Ler tamanho matriz
-            if(contador==0 & line!=""){
+            if(contador==0 && line!=""){
                 while ((pos = line.find(delimiter)) != string::npos) {
                     token = line.substr(0, pos); //extrair valor
                     NumMaintenanceInterventions = stoi(token);
@@ -72,7 +72,7 @@ double AssetTransportSolver(char * path){
             }
 
             //2ª fase: Ler custos manutencao (cij)
-            if(contador==1 & line!=""){
+            if(contador==1 && line!=""){
                 while ((pos = line.find(delimiter)) != string::npos) {
                     token = line.substr(0, pos); //extrair valor
                     MaintenanceCosts[i][j] = stod(token);
@@ -92,13 +92,13 @@ double AssetTransportSolver(char * path){
             }
 
             //3ª fase: Ler orcamento definido
-            if(contador==2 & line!=""){
+            if(contador==2 && line!=""){
                 Budget = stod(line);
                 cout << Budget << endl;
             }
 
             //4ª fase: Ler custos dada uma determinada ação (kij)
-            if(contador==3 & line!=""){
+            if(contador==3 && line!=""){
                 while ((pos = line.find(delimiter)) != string::npos) {
                     token = line.substr(0, pos); //extrair valor
                     CostMatrix[i][j] = stod(token);
@@ -114,7 +114,7 @@ double AssetTransportSolver(char * path){
             }
 
             //5ª fase: ler a procura
-            if(contador==4 & line!=""){
+            if(contador==4 && line!=""){
                 while ((pos = line.find(delimiter)) != string::npos) {
                     token = line.substr(0, pos); //extrair valor
                     DemandArray[j] = stod(token);
@@ -129,7 +129,7 @@ double AssetTransportSolver(char * path){
             }
 
             //6ª fase: ler a capacidade
-            if(contador==5 & line!=""){
+            if(contador==5 && line!=""){
                 SupplyArray[j] = stod(line);
                 cout << SupplyArray[j] << endl;
                 j++;
@@ -176,9 +176,13 @@ double AssetTransportSolver(char * path){
 
     for(int i=0; i<NumMaintenanceInterventions; i++){
         for(int j=0; j<NumAssetsTransportMatrix; j++){
-            InitalCostMatrix[i][j]=CostMatrix[i][j];
+            InitalCostMatrix[i][j]= CostMatrix[i][j];
+            cout << CostMatrix[i][j] << "\t";
         }
+        cout << endl;
     }
+
+
 
     //Lagrange Relaxation subroutine
     double RealCosts,TotalMaintenanceCosts=0;
@@ -193,7 +197,7 @@ double AssetTransportSolver(char * path){
         }
 
         //atualizar resultados para F.O. de lagrange
-        double IterationResult = transportSimplex(&srcSig, &snkSig, Dist, flow, &flowVars);
+        double IterationResult = transportSimplex(&srcSig, &snkSig, Dist, flow, &flowVars);//!!!A primeira iteracao não está a dar resultados certos
 
         //Calcular Funcao objetivo do problema original
         for (int i = 0; i < flowVars; i++){
@@ -234,4 +238,4 @@ double AssetTransportSolver(char * path){
     //||---Fim problema de transportes para o periodo t---||
 
     return BestResult;
-};
+}

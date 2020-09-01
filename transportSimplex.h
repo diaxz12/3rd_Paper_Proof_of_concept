@@ -155,11 +155,13 @@ The return value is the transportation cost.
             snkSum += signature2->weights[j];
 
         diff = srcSum - snkSum;
-        if (fabs(diff) > TSEPSILON * srcSum)
-            if (diff < 0.0)
+        if (fabs(diff) > TSEPSILON * srcSum){
+            if (diff < 0.0){
                 n1++;
-            else
+            }else{
                 n2++;
+            }
+        }
 
         _tsMaxW = srcSum > snkSum ? srcSum : snkSum;
         w = srcSum < snkSum ? srcSum : snkSum;
@@ -290,8 +292,8 @@ The return value is the transportation cost.
     }
 
 /*
-Main pivot loop. 
-Pivots until the system is optimal and return the optimal transportation cost. 
+Main pivot loop.
+Pivots until the system is optimal and return the optimal transportation cost.
 */
     double _pivot(TsBasic * basics, TsBasic ** srcBasics, TsBasic ** snkBasics, bool ** isBasic, int n1, int n2)  {
 
@@ -403,7 +405,7 @@ Pivots until the system is optimal and return the optimal transportation cost.
                     lowVal = spitrb->node->val;
                 }
                 add = !add;
-            } while (spitrb = spitrb->prev);
+            } while ((spitrb = spitrb->prev));
 
             add = false;
             spitrb = spitra;
@@ -413,7 +415,7 @@ Pivots until the system is optimal and return the optimal transportation cost.
                 if (add) spitrb->node->val += lowVal;
                 else spitrb->node->val -= lowVal;
                 add = !add;
-            } while (spitrb = spitrb->prev);
+            } while ((spitrb = spitrb->prev));
 
             i = leaving->node->i;
             j = leaving->node->j;
@@ -453,7 +455,7 @@ a loop has been found and return a pointer to the final stone in the loop.
 *********************/
     TsStone * _BFS(TsStone * stoneTree, TsBasic ** srcBasics, TsBasic ** snkBasics, bool complete) {
         bool column = true;
-        int jumpoffset = 0;
+        //int jumpoffset = 0;
         TsBasic * bitr;
         TsStone * sitra = &stoneTree[0], * sitrb = &stoneTree[1];
         do {
@@ -800,4 +802,3 @@ a loop has been found and return a pointer to the final stone in the loop.
     }
 }
 #endif
-
