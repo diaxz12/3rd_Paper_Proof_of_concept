@@ -39,7 +39,7 @@ Maintenance Action Effect
 5.00 3.00 6.00 1.00 8.00
 
 Defined Budget
-500
+100
 
 Replacement Capacity
 1

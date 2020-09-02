@@ -282,7 +282,7 @@ double SolverOriginalProblem(char const * path){
     for (int i = 0; i < AssetNumber; i++) RulDispersion += AssetRUL[i]*ReplacementCost[i];
     for (int i = 0; i < AssetNumber; i++) TotalCost += ReplacementCost[i];
 
-    ObjectiveFunction=IloSum(AssetRUL)*TotalCost/AssetNumber-RulDispersion;
+    ObjectiveFunction=OverBudget+IloSum(AssetRUL)*TotalCost/AssetNumber-RulDispersion;
 
     mod.add(IloMinimize(env, ObjectiveFunction));
     RulDispersion.end();
@@ -302,7 +302,7 @@ double SolverOriginalProblem(char const * path){
     for(int i = 0; i < AssetNumber; i++)TotalReplacementCosts+=ReplacementCost[i]*ReplaceAsset[i]; //Calcular os custos associados às substituições
 
     //adicionar restricao dos custos
-    mod.add(DefinedBudget-TotalFailureCosts-TotalMaintenanceActionCosts-TotalReplacementCosts==UnderBudget-OverBudget);
+    mod.add(DefinedBudget-TotalFailureCosts-TotalMaintenanceActionCosts-TotalReplacementCosts-UnderBudget+OverBudget==0);
     TotalFailureCosts.end();
     TotalMaintenanceActionCosts.end();
     TotalReplacementCosts.end();
