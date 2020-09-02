@@ -10,6 +10,7 @@ This header file contains the solver procedure for a given t problem of the asse
 #endif //PROOF_OF_CONCEPT_ASSETTRANSPORTSOLVER_H
 
 #include "transportSimplex.h"
+#include "OriginalProblemSolver.h"
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -56,6 +57,8 @@ double AssetTransportSolver(char const * path){
 
             if(line==""){
                 contador++; //atualizar fase
+                i=0; //reset dos indices
+                j=0; //reset dos indices
             }
 
             //1º fase: Ler tamanho matriz
@@ -63,12 +66,10 @@ double AssetTransportSolver(char const * path){
                 while ((pos = line.find(delimiter)) != string::npos) {
                     token = line.substr(0, pos); //extrair valor
                     NumMaintenanceInterventions = stoi(token);
-                    cout << NumMaintenanceInterventions << endl; // converter valor para a matriz
                     line.erase(0, pos + delimiter.length()); //apagar valor lido da linha que foi lida
                 }
                 pos = 0;
                 NumAssetsTransportMatrix = stoi(line);
-                cout << NumAssetsTransportMatrix << endl;
             }
 
             //2ª fase: Ler custos manutencao (cij)
@@ -76,13 +77,11 @@ double AssetTransportSolver(char const * path){
                 while ((pos = line.find(delimiter)) != string::npos) {
                     token = line.substr(0, pos); //extrair valor
                     MaintenanceCosts[i][j] = stod(token);
-                    cout << MaintenanceCosts[i][j] << "\t"; // converter valor para a matriz
                     line.erase(0, pos + delimiter.length()); //apagar valor lido da linha que foi lida
                     j++; //avancar a coluna
                 }
                 pos = 0;
                 MaintenanceCosts[i][j] = stod(line);
-                cout << MaintenanceCosts[i][j] << endl;
                 if(i==NumMaintenanceInterventions-1){
                     i=0;
                 }else{
@@ -94,7 +93,6 @@ double AssetTransportSolver(char const * path){
             //3ª fase: Ler orcamento definido
             if(contador==2 && line!=""){
                 Budget = stod(line);
-                cout << Budget << endl;
             }
 
             //4ª fase: Ler custos dada uma determinada ação (kij)
@@ -102,13 +100,11 @@ double AssetTransportSolver(char const * path){
                 while ((pos = line.find(delimiter)) != string::npos) {
                     token = line.substr(0, pos); //extrair valor
                     CostMatrix[i][j] = stod(token);
-                    cout << CostMatrix[i][j] << "\t"; // converter valor para a matriz
                     line.erase(0, pos + delimiter.length()); //apagar valor lido da linha que foi lida
                     j++; //avancar a coluna
                 }
                 pos = 0;
                 CostMatrix[i][j] = stod(line);
-                cout << CostMatrix[i][j] << endl;
                 i++; //avancar a linha
                 j=0; //reset da coluna
             }
@@ -118,20 +114,17 @@ double AssetTransportSolver(char const * path){
                 while ((pos = line.find(delimiter)) != string::npos) {
                     token = line.substr(0, pos); //extrair valor
                     DemandArray[j] = stod(token);
-                    cout << DemandArray[j] << "\t"; // converter valor para a matriz
                     line.erase(0, pos + delimiter.length()); //apagar valor lido da linha que foi lida
                     j++; //avancar a linha
                 }
                 pos = 0;
                 DemandArray[j] = stod(line);
-                cout << DemandArray[j] << endl;
                 j=0; //reset da linha
             }
 
             //6ª fase: ler a capacidade
             if(contador==5 && line!=""){
                 SupplyArray[j] = stod(line);
-                cout << SupplyArray[j] << endl;
                 j++;
             }
 
@@ -177,12 +170,8 @@ double AssetTransportSolver(char const * path){
     for(int i=0; i<NumMaintenanceInterventions; i++){
         for(int j=0; j<NumAssetsTransportMatrix; j++){
             InitalCostMatrix[i][j]= CostMatrix[i][j];
-            cout << CostMatrix[i][j] << "\t";
         }
-        cout << endl;
     }
-
-
 
     //Lagrange Relaxation subroutine
     double RealCosts,TotalMaintenanceCosts=0;
@@ -236,6 +225,26 @@ double AssetTransportSolver(char const * path){
     cout << "Solving time (s) = " << ElapsedTime << endl;
 
     //||---Fim problema de transportes para o periodo t---||
+
+    // ||---Output results---||
+    bool existe;
+    existe = check_results_output("resultados/output_langrange.csv");
+
+    //para imprimir a solucao e resultados
+    ofstream output;
+
+    //esta linha de codigo permite fazer append aos resultados resumidos obtidas
+    output.open("resultados/output_langrange.csv", fstream::app);
+
+    //imprimir resultados no ficheiro output_original.csv
+    if (existe == true) {
+        output << path << "\t" << "Langrange" << "\t" << AssetNumber << "\t" << TimeWindow << "\t" << MaintenanceTypes << "\t" << "To be defined"
+               << "\t" << ElapsedTime << "\t" << BestResult << "\t" << endl;
+    } else {
+        output << "Instance\tFormulation type\tAssets number\tTime window Length\tMaintenance Types\tSolution Status\tSolving Time\tSolution value\n";
+        output << path << "\t" << "Langrange" << "\t" << AssetNumber << "\t" << TimeWindow << "\t" << MaintenanceTypes << "\t" << "To be defined"
+               << "\t" << ElapsedTime << "\t" << BestResult << "\t" << endl;
+    }
 
     return BestResult;
 }
