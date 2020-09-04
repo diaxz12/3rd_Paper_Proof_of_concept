@@ -24,9 +24,9 @@ using namespace std;
 //Variaveis globais <---esta parte pode ser melhorada pois estou alocar memória de uma forma estática e não dinâmica
 int NumMaintenanceInterventions,NumAssetsTransportMatrix;
 double Budget; //orcamento definido em t
-double CostMatrix[10][1000]; //Custos do problema de transportes para o problema t
-double MaintenanceCosts[10][1000]; //Custos de manutencao definido na instancia do problema T
-double DemandArray[1000]; //Procura em t de cada ativo
+double CostMatrix[10][500]; //Custos do problema de transportes para o problema t
+double MaintenanceCosts[10][500]; //Custos de manutencao definido na instancia do problema T
+double DemandArray[500]; //Procura em t de cada ativo
 double SupplyArray[10]; //Recursos de manutencao disponivel em t para cada tipo de acao de manutencao
 
 //Permite extrair o valor da matriz de custo
@@ -150,19 +150,19 @@ double AssetTransportSolver(char const * path){
         warehouses[k] = k+1;
     }
 
-    cout << "Costs:" << endl;
-    for (int i = 0; i < NumMaintenanceInterventions; i++)
-        for (int j = 0; j < NumAssetsTransportMatrix; j++)
-            cout << factories[i] << " to " << warehouses[j] << " : " << Dist(&factories[i], &warehouses[j]) << endl;
+//    cout << "Costs:" << endl;
+//    for (int i = 0; i < NumMaintenanceInterventions; i++)
+//        for (int j = 0; j < NumAssetsTransportMatrix; j++)
+//            cout << factories[i] << " to " << warehouses[j] << " : " << Dist(&factories[i], &warehouses[j]) << endl;
 
-    TsSignature<int> srcSig(NumAssetsTransportMatrix, factories, SupplyArray);
+    TsSignature<int> srcSig(NumMaintenanceInterventions, factories, SupplyArray);
     TsSignature<int> snkSig(NumAssetsTransportMatrix, warehouses, DemandArray);
 
     TsFlow flow[1000];
     int flowVars = 0;
 
     //Start lagrange relaxation
-    double BestResult = 0; //variável que guarda o melhor valor
+    double BestResult = 100000; //variável que guarda o melhor valor. é preciso inicializar com um valor muito mau
 
     //Guardar os valores originais da matriz de custo
     double InitalCostMatrix[NumMaintenanceInterventions][NumAssetsTransportMatrix];
@@ -190,7 +190,7 @@ double AssetTransportSolver(char const * path){
 
         //Calcular Funcao objetivo do problema original
         for (int i = 0; i < flowVars; i++){
-            RealCosts = RealCosts + InitalCostMatrix[flow[i].from][flow[i].to] - 500;//!!!atenção que o 500 é para evitar valores negativos. é preciso alterar mais tarde esta parte.
+            RealCosts = RealCosts + InitalCostMatrix[flow[i].from][flow[i].to] - 2000;//!!!atenção que o 2000 é para evitar valores negativos. é preciso alterar mais tarde esta parte.
             TotalMaintenanceCosts = TotalMaintenanceCosts + MaintenanceCosts[flow[i].from][flow[i].to];
         }
 

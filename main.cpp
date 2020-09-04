@@ -12,9 +12,9 @@ int main(int argc, char** argv) {
 
     // ||---Rotina para ler as coordenadas do ficheiro input do problema de t---||
     if(argc >= 1){
-        for(int i=0; i<10; i++){
-            OriginalTotalCost = SolverOriginalProblem("Optimization_original_input.txt");
-            TotalCost = AssetTransportSolver("Optimization_langrange_input.txt");
+        for(int i=0; i<1; i++){
+            OriginalTotalCost = SolverOriginalProblem("data/teste_original.txt");
+            TotalCost = AssetTransportSolver("data/teste_aproximado.txt");
         }
     }else{
         cerr << "Missing input File\n";

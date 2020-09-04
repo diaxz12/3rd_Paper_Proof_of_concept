@@ -455,7 +455,7 @@ a loop has been found and return a pointer to the final stone in the loop.
 *********************/
     TsStone * _BFS(TsStone * stoneTree, TsBasic ** srcBasics, TsBasic ** snkBasics, bool complete) {
         bool column = true;
-        //int jumpoffset = 0;
+        //int jumpoffse__OBJC_ROt = 0;
         TsBasic * bitr;
         TsStone * sitra = &stoneTree[0], * sitrb = &stoneTree[1];
         do {

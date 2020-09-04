@@ -1,0 +1,6 @@
+Instance	Formulation type	Assets number	Time window Length	Maintenance Types	Solution Status	Solving Time	Solution value
+data/teste_original.txt	Original	300	5	3	Optimal	0.030294	36233.7	
+data/teste_original.txt	Original	100	5	3	Optimal	0.025686	-638.854	
+data/teste_original.txt	Original	100	5	3	Optimal	0.018295	-1385.68	
+data/teste_original.txt	Original	100	5	3	Optimal	0.030274	-1385.68	
+data/teste_original.txt	Original	100	5	3	Optimal	0.027717	-1385.68	

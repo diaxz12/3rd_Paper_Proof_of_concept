@@ -1,0 +1,6 @@
+Instance	Formulation type	Assets number	Time window Length	Maintenance Types	Solution Status	Solving Time	Solution value
+data/teste_aproximado.txt	Langrange	300	5	3	To be defined	0.052966	-7028	
+data/teste_aproximado.txt	Langrange	100	5	3	To be defined	0.021393	-767	
+data/teste_aproximado.txt	Langrange	100	5	3	To be defined	0.010847	-1591.5	
+data/teste_aproximado.txt	Langrange	100	5	3	To be defined	0.009029	-1591.5	
+data/teste_aproximado.txt	Langrange	100	5	3	To be defined	0.003033	-1591.5	

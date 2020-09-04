@@ -262,7 +262,7 @@ double SolverOriginalProblem(char const * path){
     IloModel mod(env);
 
     //DECISION VARIABLES
-    IloNumVarArray ReplaceAsset(env, AssetNumber, 0.0, IloInfinity, ILOFLOAT);
+    IloNumVarArray ReplaceAsset(env, AssetNumber, 0.0, 1.0, ILOBOOL);
 
     IloNumVarArray2 MaintenanceAction(env);
     for (int a = 0; a < MaintenanceTypes; a++) {
@@ -339,6 +339,7 @@ double SolverOriginalProblem(char const * path){
 
 
     //resolver o modelo gerado
+    cplex.exportModel("model.lp");
     cplex.solve();
 
     //end clock
