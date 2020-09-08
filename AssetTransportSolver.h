@@ -24,9 +24,9 @@ using namespace std;
 //Variaveis globais <---esta parte pode ser melhorada pois estou alocar memória de uma forma estática e não dinâmica
 int NumMaintenanceInterventions,NumAssetsTransportMatrix;
 double Budget; //orcamento definido em t
-double CostMatrix[10][500]; //Custos do problema de transportes para o problema t
-double MaintenanceCosts[10][500]; //Custos de manutencao definido na instancia do problema T
-double DemandArray[500]; //Procura em t de cada ativo
+double CostMatrix[10][1000]; //Custos do problema de transportes para o problema t
+double MaintenanceCosts[10][1000]; //Custos de manutencao definido na instancia do problema T
+double DemandArray[1000]; //Procura em t de cada ativo
 double SupplyArray[10]; //Recursos de manutencao disponivel em t para cada tipo de acao de manutencao
 
 //Permite extrair o valor da matriz de custo
@@ -212,9 +212,9 @@ double AssetTransportSolver(char const * path){
         TotalMaintenanceCosts=0;
     }
 
-    //Output da solucao final
-    for (int i = 0; i < flowVars; i++)
-        cout << factories[flow[i].from] << " to " << warehouses[flow[i].to] << " : " << flow[i].amount << endl;
+//    //Output da solucao final
+//    for (int i = 0; i < flowVars; i++)
+//        cout << factories[flow[i].from] << " to " << warehouses[flow[i].to] << " : " << flow[i].amount << endl;
 
     //end clock
     clock_t endTime = clock();
@@ -222,7 +222,7 @@ double AssetTransportSolver(char const * path){
     //Calcular tempo final
     ElapsedTime = double(endTime - beginTime) / CLOCKS_PER_SEC;
 
-    cout << "Solving time (s) = " << ElapsedTime << endl;
+    //cout << "Solving time (s) = " << ElapsedTime << endl;
 
     //||---Fim problema de transportes para o periodo t---||
 

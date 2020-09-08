@@ -26,8 +26,8 @@ typedef IloArray<IloNumVarArray> IloNumVarArray2;
 //Variaveis globais
 int AssetNumber, TimeWindow, ReplacementCapacity, DefinedBudget, MaintenanceTypes;
 double InitialCondition[1000];
-double AverageDegradation[100];
-double PeriodDegradation[100];
+double AverageDegradation[1000];
+double PeriodDegradation[1000];
 double ReplacementCost[1000];
 double FailureCost[1000];
 double MaintenanceActionCapacity[5];
@@ -222,7 +222,6 @@ void ReadOriginalInput(char const * path) {
     }
 
     //||---Leitura de dados concluida---||
-
 }
 
 //funcao para verificar existencia do ficheiro dos resultados resumidos
@@ -339,7 +338,6 @@ double SolverOriginalProblem(char const * path){
 
 
     //resolver o modelo gerado
-    cplex.exportModel("model.lp");
     cplex.solve();
 
     //end clock
@@ -351,23 +349,23 @@ double SolverOriginalProblem(char const * path){
     // ||---Fim da rotina para o modelo do CPLEX---||
 
     // ||---Print Results---||
-    cout << endl << "Asset Replacement" << endl;
-    for(int i = 0; i < AssetNumber; i++)cout << cplex.getValue(ReplaceAsset[i]) << "\t";
-    cout << endl;
-
-    cout << endl << "Asset Maintenance" << endl;
-    for(int a = 0; a < MaintenanceTypes; a++){
-        for(int i = 0; i < AssetNumber; i++)cout << cplex.getValue(MaintenanceAction[a][i]) << "\t";
-        cout << endl;
-    }
-
-    cout << endl << "Asset Failure" << endl;
-    for(int i = 0; i < AssetNumber; i++)cout << cplex.getValue(AssetFailed[i]) << "\t";
-    cout << endl;
-
-    cout << endl << "Asset RUL" << endl;
-    for(int i = 0; i < AssetNumber; i++)cout << cplex.getValue(AssetRUL[i]) << "\t";
-    cout << endl;
+//    cout << endl << "Asset Replacement" << endl;
+//    for(int i = 0; i < AssetNumber; i++)cout << cplex.getValue(ReplaceAsset[i]) << "\t";
+//    cout << endl;
+//
+//    cout << endl << "Asset Maintenance" << endl;
+//    for(int a = 0; a < MaintenanceTypes; a++){
+//        for(int i = 0; i < AssetNumber; i++)cout << cplex.getValue(MaintenanceAction[a][i]) << "\t";
+//        cout << endl;
+//    }
+//
+//    cout << endl << "Asset Failure" << endl;
+//    for(int i = 0; i < AssetNumber; i++)cout << cplex.getValue(AssetFailed[i]) << "\t";
+//    cout << endl;
+//
+//    cout << endl << "Asset RUL" << endl;
+//    for(int i = 0; i < AssetNumber; i++)cout << cplex.getValue(AssetRUL[i]) << "\t";
+//    cout << endl;
 
     // ||---Output results---||
     bool existe;
